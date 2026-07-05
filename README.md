@@ -1,99 +1,128 @@
 # Folder Sizes
 
-`folderSizes.sh` — a small macOS command-line tool that lists the size of each
-**subfolder** inside a directory, with a human-readable size, exact byte count,
-file count, and folder name. Results can be sorted alphabetically or by size.
+**List the size of every subfolder in a directory — human-readable size, exact bytes, and file count.**
 
-- **Script:** `folderSizes.sh`
-- **Version:** 1.3
-- **Platform:** macOS
-- **Maintainer:** Cloud Box 9 Inc.
+`folderSizes.sh` reports the size of each immediate subfolder within a target directory: a human-readable size (e.g. `4.0G`), the size in bytes with thousands separators, the file count, and the folder name. Sort alphabetically or by size. A single self-contained Bash script — no config, no dependencies.
+
+---
+
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Features](#features)
+3. [Requirements](#requirements)
+4. [Installation](#installation)
+5. [Alias Setup — Run From Anywhere](#alias-setup--run-from-anywhere)
+6. [Usage & Examples](#usage--examples)
+7. [Troubleshooting](#troubleshooting)
+8. [License / Copyright](#license--copyright)
+
+---
+
+## Overview
+
+Quickly answer "what's eating space in this folder?" without opening a GUI. Point it at any directory (defaults to the current one) and get a sorted table of subfolder sizes.
+
+---
+
+## Features
+
+- **Rich output** — human-readable size, exact bytes (comma-grouped), file count, folder name.
+- **Two sort modes** — alphabetical (`-a`, default) or largest-first (`-s`).
+- **Defaults to the current directory** when no folder is given.
+- **CB9-styled** — dynamic-width header/footer, colors, and a legend showing the active sort.
 
 ---
 
 ## Requirements
 
-- **macOS** (uses the BSD `du` flags `-sh` / `-sk`).
-- **Bash** — the script's shebang points at Homebrew bash
-  (`/opt/homebrew/bin/bash`). If you don't have it there, run it explicitly with
-  `bash folderSizes.sh …`.
-- Standard tools that ship with macOS: `du`, `tput`, `awk`, `sed`.
-
-No installation or dependencies beyond the above.
+| Requirement | Notes |
+|-------------|-------|
+| **macOS** (or Linux) | Uses `bash` and `du`. Shebang targets Homebrew bash (`/opt/homebrew/bin/bash`). |
+| **Bash 4+** | For associative arrays / formatting. On macOS install via `brew install bash`. |
 
 ---
 
-## Usage
+## Installation
 
 ```bash
-folderSizes.sh [-a] [-s] [FOLDER]
-```
-
-If `FOLDER` is omitted, the current directory is used.
-
-Make it executable once, then run it:
-
-```bash
+git clone <REPOSITORY_URL> FolderSizes
+cd FolderSizes
 chmod +x folderSizes.sh
-./folderSizes.sh ~/Documents
+./folderSizes.sh -h
 ```
-
-Or run it via bash without changing permissions:
-
-```bash
-bash folderSizes.sh -s ~/Documents
-```
-
-Optionally add an alias:
-
-```bash
-alias foldersizes='~/Documents/scriptPublished_dist/FolderSizes/folderSizes.sh'
-```
-
-### Options
-
-| Option | Description |
-|--------|-------------|
-| `-a`   | Sort alphabetically by folder name **(default)** |
-| `-s`   | Sort by size, largest first |
-| `-h`   | Show the help screen and exit |
 
 ---
 
-## Output columns
+## Alias Setup — Run From Anywhere
 
-| Column | Meaning |
+Launch from any directory by typing `foldersizes`.
+
+### macOS / Linux (zsh or bash)
+
+Make it executable, then add to `~/.zshrc` or `~/.bashrc`:
+
+```bash
+chmod +x ~/path/to/FolderSizes/folderSizes.sh
+alias foldersizes='~/path/to/FolderSizes/folderSizes.sh'
+```
+
+Reload and run:
+
+```bash
+source ~/.zshrc
+foldersizes -s ~/Documents
+```
+
+**Alternative — symlink onto your `PATH`:**
+
+```bash
+ln -s ~/path/to/FolderSizes/folderSizes.sh /usr/local/bin/foldersizes
+```
+
+> **Windows:** run under **WSL** or **Git Bash** with `bash folderSizes.sh`.
+
+---
+
+## Usage & Examples
+
+```
+folderSizes.sh [-a] [-s] [-h] [FOLDER]
+```
+
+| Option | Meaning |
 |--------|---------|
-| **Size (HR)** | Human-readable size (e.g. `1.2G`, `340M`) |
-| **Size (Bytes)** | Exact size in bytes, comma-formatted |
-| **File Count** | Total number of files inside the folder (recursive) |
-| **Folder** | Subfolder name |
+| `-a` | Sort alphabetically by folder name (default) |
+| `-s` | Sort by size, largest first |
+| `-h` | Show help and usage |
+| `FOLDER` | Directory to scan (defaults to the current directory) |
 
-The header shows the target directory and the active sort mode; a legend lists
-the available sort options. Output is color-coded and the header/footer scale to
-your terminal width.
-
----
-
-## Examples
+**Examples:**
 
 ```bash
-# Current directory, alphabetical (default)
-folderSizes.sh
-
-# A specific volume, largest folders first
-folderSizes.sh -s /Volumes/CB9-13Media/BPA_Media2025
-
-# Your Documents folder, explicit alphabetical sort
-folderSizes.sh -a ~/Documents
+folderSizes.sh                       # current directory, alphabetical
+folderSizes.sh -s ~/Documents        # ~/Documents, largest first
+folderSizes.sh /Volumes/Media        # a specific volume
 ```
 
 ---
 
-## Notes
+## Troubleshooting
 
-- Only **immediate** subfolders of the target are listed (one level deep); the
-  file count for each is counted recursively.
-- Sizes come from `du`, which reports disk usage (allocated blocks) — this can
-  differ slightly from the logical sum of file sizes.
-- Press `Ctrl+C` at any time to exit cleanly.
+| Symptom | Fix |
+|---------|-----|
+| `bad interpreter: /opt/homebrew/bin/bash` | Install Homebrew bash (`brew install bash`) or run via `bash folderSizes.sh`. |
+| Sizes look slow on huge trees | `du` walks the whole tree; large volumes take time. |
+| Permission denied on some folders | Run against paths you can read, or with appropriate permissions. |
+
+---
+
+## License / Copyright
+
+---
+**Version:** 1.3
+**Author:** Cloud Box 9 Inc.
+**Maintainer / Owner:** Cloud Box 9 Inc.
+**Last Updated:** Jul 5, 2026
+
+Copyright © 2026 Cloud Box 9 Inc. All rights reserved.
